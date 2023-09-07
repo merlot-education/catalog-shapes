@@ -56,14 +56,6 @@ merlot:exchangeCountOption
 	rdfs:comment		 "Option for allowed count of data exchanges" ;
 . 
 
-merlot:exchangeCountUnlimited
-	a		 owl:DatatypeProperty ;
-	rdfs:label		 "exchange count unlimited"@en ;
-	rdfs:domain		 merlot:MerlotServiceOfferingDataDelivery ;
-	rdfs:range		 xsd:boolean ;
-	rdfs:comment		 "Allow unlimited number of transfers as an option." ;
-. 
-
 merlot:dataTransferType
 	a		 owl:DatatypeProperty ;
 	rdfs:label		 "data transfer type"@en ;
@@ -122,14 +114,6 @@ merlot:runtimeOption
 	rdfs:comment		 "Option for a runtime of the Service Offering" ;
 . 
 
-merlot:runtimeUnlimited
-	a		 owl:DatatypeProperty ;
-	rdfs:label		 "runtime unlimited"@en ;
-	rdfs:domain		 merlot:MerlotServiceOffering ;
-	rdfs:range		 xsd:boolean ;
-	rdfs:comment		 "Allow unlimited runtime as an option." ;
-. 
-
 merlot:merlotTermsAndConditionsAccepted
 	a		 owl:DatatypeProperty ;
 	rdfs:label		 "merlot terms and conditions accepted"@en ;
@@ -162,14 +146,6 @@ merlot:userCountOption
 	rdfs:domain		 merlot:MerlotServiceOfferingSaaS ;
 	rdfs:range		 merlot:AllowedUserCount ;
 	rdfs:comment		 "Option for allowed count of users for the software" ;
-. 
-
-merlot:userCountUnlimited
-	a		 owl:DatatypeProperty ;
-	rdfs:label		 "user count unlimited"@en ;
-	rdfs:domain		 merlot:MerlotServiceOfferingSaaS ;
-	rdfs:range		 xsd:boolean ;
-	rdfs:comment		 "Allow unlimited number of users as an option." ;
 . 
 
 ################## 
@@ -275,11 +251,19 @@ merlot:addressCode
 	rdfs:comment		 "Address Code." ;
 . 
 
-merlot:termsConditionsLink
+merlot:mailAddress
 	a		 owl:DatatypeProperty ;
-	rdfs:label		 "terms conditions link"@en ;
+	rdfs:label		 "mail address"@en ;
 	rdfs:domain		 merlot:MerlotOrganization ;
 	rdfs:range		 xsd:string ;
-	rdfs:comment		 "Terms and Conditions Link" ;
+	rdfs:comment		 "Mail-Address." ;
+. 
+
+merlot:termsAndConditions
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "terms conditions"@en ;
+	rdfs:domain		 merlot:MerlotOrganization ;
+	rdfs:range		 gax-trust-framework:TermsAndConditions ;
+	rdfs:comment		 "Terms and Conditions" ;
 . 
 
