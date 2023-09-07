@@ -1,0 +1,32 @@
+@prefix gax-core: <http://w3id.org/gaia-x/core#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:ServiceOfferingShape a sh:NodeShape ;
+    sh:property [ skos:example "'https://gaia-x.eu'" ;
+            sh:description "Teilnehmer, der dieses Service Angebot veröffentlicht."@de,
+                "DID of participant self-descrription, who is offering this service offering."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "Service Anbieter" ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gax-core:offeredBy ],
+        [ skos:example "'https://gaia-x.eu'" ;
+            sh:description "Habe die Ressourcen-Selbstbeschreibung im Zusammenhang mit dem Dienst getan, und das kann unabhängig davon existieren."@de,
+                "DID of resource self-escription related to the service and that can exist independently of it."@en ;
+            sh:name "Gruppierung" ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gax-core:aggregationOf ],
+        [ skos:example "'https://gaia-x.eu'" ;
+            sh:description "Hat von dem Dienst, der Selbstbeschreibung im Zusammenhang mit dem Dienst anbietet, und das kann unabhängig davon existieren."@de,
+                "DID of the service offering self-description related to the service and that can exist independently of it."@en ;
+            sh:name "Abhängigkeit" ;
+            sh:nodeKind sh:IRI ;
+            sh:order 3 ;
+            sh:path gax-core:dependsOn ] ;
+    sh:targetClass gax-core:ServiceOffering .
+

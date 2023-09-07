@@ -1,0 +1,25 @@
+@prefix gax-core: <http://w3id.org/gaia-x/core#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:ResourceShape a sh:NodeShape ;
+    sh:property [ skos:example "''" ;
+            sh:description "Habe die Selbstbeschreibung der Ressourcen in Bezug auf die Ressource getan und das kann unabhängig davon existieren."@de,
+                "DID of resources self-description related to the resource and that can exist independently of it."@en ;
+            sh:name "Gruppierung" ;
+            sh:nodeKind sh:IRI ;
+            sh:order 1 ;
+            sh:path gax-core:aggregationOf ],
+        [ skos:example "'https://gaia-x.eu'" ;
+            sh:description "Habe die Selbstbeschreibung der Teilnehmer im Zusammenhang mit dem Teilnehmer, der diese Ressource betreibt, in Bezug auf den Teilnehmer bezogen."@de,
+                "DID of participant self-description related to the participant, who operates this resource."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "operated by" ;
+            sh:nodeKind sh:IRI ;
+            sh:order 2 ;
+            sh:path gax-core:operatedBy ] ;
+    sh:targetClass gax-core:Resource .
+

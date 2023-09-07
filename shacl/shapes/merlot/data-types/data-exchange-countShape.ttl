@@ -1,0 +1,21 @@
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix merlot: <http://w3id.org/gaia-x/merlot#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:DataExchangeCountShape a sh:NodeShape ;
+    sh:closed true ;
+	sh:ignoredProperties ( rdf:type ) ;
+    sh:property 
+        [ skos:example "'5'" ;
+            sh:datatype xsd:number ;
+            sh:description "Maximal zulässige Anzahl an Datenaustauschen. Auf 0 setzen für 'unbegrenzt'."@de,
+                "Number of data exchanges up to which the transfer is allowed. Set to 0 for 'unlimited'."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "Option für maximale Anzahl an Datenaustauschen" ;
+            sh:order 1 ;
+            sh:path merlot:exchangeCountUpTo ] ;
+    sh:targetClass merlot:DataExchangeCount .
+

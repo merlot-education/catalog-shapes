@@ -1,0 +1,133 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:GPUShape a sh:NodeShape ;
+    sh:property [ skos:example "'Fermi', 'Kepler', 'Gen9'" ;
+            sh:datatype xsd:string ;
+            sh:description "GPU -Generation."@de,
+                "GPU generation."@en ;
+            sh:maxCount 1 ;
+            sh:name "gpu generation" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:gpuGeneration ],
+        [ skos:example "'a structure object of type Memory'" ;
+            sh:description "Erinnerung an die GPU"@de,
+                "Memory of the GPU"@en ;
+            sh:maxCount 1 ;
+            sh:name "memory" ;
+            sh:node gax-validation:MemoryShape ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:memory ],
+        [ skos:example "'PCIe Gen4: 64GB/s'" ;
+            sh:datatype xsd:string ;
+            sh:description "Zusammenfassung der GPU"@de,
+                "Interconnection of the GPU"@en ;
+            sh:maxCount 1 ;
+            sh:name "connection" ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:connection ],
+        [ skos:example "'Xeon Platinum 8280'" ;
+            sh:datatype xsd:string ;
+            sh:description "Produktname der Hardware -Ressource."@de,
+                "Procuct name of the hardware resource."@en ;
+            sh:maxCount 1 ;
+            sh:name "Servicename" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:name ],
+        [ skos:example "'intel', 'AMD', 'NVIDEA', 'others'" ;
+            sh:datatype xsd:string ;
+            sh:description "Verkäufer dieser Hardware."@de,
+                "Vendor of this hardware."@en ;
+            sh:in ( "intel" "AMD" "NVIDEA" "others" ) ;
+            sh:maxCount 1 ;
+            sh:name "vendor" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:vendor ] ;
+    sh:targetClass gax-trust-framework:GPU .
+
+gax-validation:MeasureShape a sh:NodeShape ;
+    sh:property [ skos:example "'100'" ;
+            sh:datatype xsd:float ;
+            sh:description "Der Wert dieser Messung."@de,
+                "The value of this measurement."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "value" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:value ],
+        [ skos:example "'Gbps', 'Euro'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die Einheit dieser Messung"@de,
+                "The unit of this measurement"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "unit" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:unit ] ;
+    sh:targetClass gax-trust-framework:Measure .
+
+gax-validation:MemoryShape a sh:NodeShape ;
+    sh:property [ skos:example "'a structure object of type measure, e.g. measure:value=24 and measure:unit=GB'" ;
+            sh:description "Erinnerung an die GPU"@de,
+                "Memory of the GPU"@en ;
+            sh:maxCount 1 ;
+            sh:name "size" ;
+            sh:node gax-validation:MeasureShape ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:size ],
+        [ skos:example "'DDR4', 'DDR5', 'GDDR5', 'GDDR6'" ;
+            sh:datatype xsd:string ;
+            sh:description "Speicherklasse"@de,
+                "Memory class"@en ;
+            sh:maxCount 1 ;
+            sh:name "memclass" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:memclass ],
+        [ skos:example "'1R RDIMM', '2R RDIMM', '4R LRDIMM', '8R LRDIMM'" ;
+            sh:datatype xsd:string ;
+            sh:description "DIMM -Typ"@de,
+                "DIMM Type"@en ;
+            sh:maxCount 1 ;
+            sh:name "rank" ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:rank ],
+        [ skos:example "'1.0'" ;
+            sh:datatype xsd:float ;
+            sh:description "Ein dimensionsloser Wert größer oder gleich 1,0, der das Standard -Überbuchungsverhältnis in diesem Speicher beschreibt"@de,
+                "a dimensionless value larger or equal to 1.0 describing the default overbooking ratio on this memory"@en ;
+            sh:maxCount 1 ;
+            sh:minInclusive 1.0 ;
+            sh:name "default overbooking ratio" ;
+            sh:order 4 ;
+            sh:path gax-trust-framework:defaultOverbookingRatio ],
+        [ skos:example "'1.0'" ;
+            sh:datatype xsd:float ;
+            sh:description "Mehrere dimensionslose Werte größer oder gleich 1.0 beschreiben die verfügbaren Überbuchungsverhältnisse in diesem Speicher"@de,
+                "several dimensionless values larger or equal to 1.0 describing the available overbooking ratios on this memory"@en ;
+            sh:minInclusive 1.0 ;
+            sh:name "supported overbooking ratio" ;
+            sh:order 5 ;
+            sh:path gax-trust-framework:supportedOverbookingRatio ],
+        [ skos:example "'Xeon Platinum 8280'" ;
+            sh:datatype xsd:string ;
+            sh:description "Produktname der Hardware -Ressource."@de,
+                "Procuct name of the hardware resource."@en ;
+            sh:maxCount 1 ;
+            sh:name "Servicename" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:name ],
+        [ skos:example "'intel', 'AMD', 'NVIDEA', 'others'" ;
+            sh:datatype xsd:string ;
+            sh:description "Verkäufer dieser Hardware."@de,
+                "Vendor of this hardware."@en ;
+            sh:in ( "intel" "AMD" "NVIDEA" "others" ) ;
+            sh:maxCount 1 ;
+            sh:name "vendor" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:vendor ] ;
+    sh:targetClass gax-trust-framework:Memory .
+

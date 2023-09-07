@@ -1,0 +1,54 @@
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:AgentShape a sh:NodeShape ;
+    sh:property [ skos:example "'example-given-name'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die Eigenschaft V: Vornamen gibt den Vornamen Teil eines Personennamens an."@de,
+                "The v:given-name property specifies the given name part of a persons name."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "given-name" ;
+            sh:order 1 ;
+            sh:path vcard:given-name ],
+        [ skos:example "'example-family-name'" ;
+            sh:datatype xsd:string ;
+            sh:description "Das V-Name V: VERFAMILIE NAME GESEHEN SIE DEN STARMENNAME TEIL eines Personennamens."@de,
+                "The v:family-name property specifies the family name part of a persons name."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "family-name" ;
+            sh:order 2 ;
+            sh:path vcard:family-name ],
+        [ skos:example "'example-nickname'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die V -Spitzname gibt den Spitznamen einer Person an."@de,
+                "The v:nickname property specifies the nickname of a person."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "nickname" ;
+            sh:order 3 ;
+            sh:path vcard:nickname ],
+        [ skos:example "'example-Email'" ;
+            sh:datatype xsd:anyURI ;
+            sh:description "Die V: E -Mail -Eigenschaft gibt eine E -Mail -Adresse an."@de,
+                "The v:email property specifies an email address."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "email" ;
+            sh:order 4 ;
+            sh:path vcard:email ],
+        [ skos:example "'+49 030 12324567'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die V: Tel -Eigenschaft gibt eine Telefonennummer an."@de,
+                "The v:tel property specifies a telefon number."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "tel" ;
+            sh:order 5 ;
+            sh:path vcard:tel ] ;
+    sh:targetClass vcard:Agent .
+

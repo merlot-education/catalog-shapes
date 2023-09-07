@@ -1,0 +1,103 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:DiskShape a sh:NodeShape ;
+    sh:property [ skos:example "'1600 GB'" ;
+            sh:description "Die Größe dieser Festplatte."@de,
+                "The size of that hard drive."@en ;
+            sh:maxCount 1 ;
+            sh:name "size" ;
+            sh:node gax-validation:MeasureShape ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:size ],
+        [ skos:example "'local SSD', 'local HDD', 'shared network storage', 'high-perf NVMe'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die Art dieser Festplatte."@de,
+                "The type of that hard drive."@en ;
+            sh:maxCount 1 ;
+            sh:name "type" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:type ],
+        [ skos:example "'(a strucctured object of type gax-trust-framework:Encryption)'" ;
+            sh:description "Details der Festplattenverschlüsselung."@de,
+                "Details of disk ecryption."@en ;
+            sh:maxCount 1 ;
+            sh:name "encryption" ;
+            sh:node gax-validation:EncryptionShape ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:encryption ],
+        [ skos:example "'managed', 'bring-your-own-key', ' hold-your-own-key'" ;
+            sh:datatype xsd:string ;
+            sh:description "Schlüsselverwaltungsmethode definieren.'Managed': Tasten werden von Key Manager von Cloud erstellt und gespeichert.'Bring-your-Own-Key' :: Keys, die vom Benutzer erstellt und im Key Manager von Cloud gespeichert sind.'Hold-Your-Own-Key': Schlüssel, der vom Benutzer erstellt und vom Benutzer aufbewahrt wird"@de,
+                "Define key management method. 'managed': Keys are created by and stored in key manager of cloud. 'bring-your-own-key': : Keys created by user and stored in key manager of cloud. 'hold-your-own-key': Key created by user and kept by user"@en ;
+            sh:minCount 1 ;
+            sh:name "key management" ;
+            sh:order 4 ;
+            sh:path gax-trust-framework:keyManagement ],
+        [ skos:example "'Xeon Platinum 8280'" ;
+            sh:datatype xsd:string ;
+            sh:description "Produktname der Hardware -Ressource."@de,
+                "Procuct name of the hardware resource."@en ;
+            sh:maxCount 1 ;
+            sh:name "Servicename" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:name ],
+        [ skos:example "'intel', 'AMD', 'NVIDEA', 'others'" ;
+            sh:datatype xsd:string ;
+            sh:description "Verkäufer dieser Hardware."@de,
+                "Vendor of this hardware."@en ;
+            sh:in ( "intel" "AMD" "NVIDEA" "others" ) ;
+            sh:maxCount 1 ;
+            sh:name "vendor" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:vendor ] ;
+    sh:targetClass gax-trust-framework:Disk .
+
+gax-validation:EncryptionShape a sh:NodeShape ;
+    sh:property [ skos:example "'none', 'rsa'" ;
+            sh:datatype xsd:string ;
+            sh:description "Unterstützter Algorithmus zum Verschlüsseln."@de,
+                "Supported algorithm used to encrypt."@en ;
+            sh:in ( "none" "rsa" ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "encryption algorithm" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:encryptionAlgorithm ],
+        [ skos:example "'managed', 'byok', 'hyok'" ;
+            sh:datatype xsd:string ;
+            sh:description "Schlüsselverwaltungsmethode definieren.'Managed': Tasten werden von Key Manager von Cloud erstellt und gespeichert.'BYOK': Bring-Your-Own-Key: Keys, die vom Benutzer erstellt und im Key Manager von Cloud gespeichert sind.'Hyok' Hold-Your-Own-Taste-Schlüssel, das vom Benutzer erstellt und vom Benutzer aufbewahrt wird"@de,
+                "Define key management method. 'managed': Keys are created by and stored in key manager of cloud. 'byok': bring-your-own-key: Keys created by user and stored in key manager of cloud. 'hyok' hold-your-own-key Key created by user and kept by user"@en ;
+            sh:in ( "managed" "byok" "hyok" ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "key management" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:keyManagement ] ;
+    sh:targetClass gax-trust-framework:Encryption .
+
+gax-validation:MeasureShape a sh:NodeShape ;
+    sh:property [ skos:example "'100'" ;
+            sh:datatype xsd:float ;
+            sh:description "Der Wert dieser Messung."@de,
+                "The value of this measurement."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "value" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:value ],
+        [ skos:example "'Gbps', 'Euro'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die Einheit dieser Messung"@de,
+                "The unit of this measurement"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "unit" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:unit ] ;
+    sh:targetClass gax-trust-framework:Measure .
+

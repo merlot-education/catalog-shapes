@@ -1,0 +1,36 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:DataAccountExportShape a sh:NodeShape ;
+    sh:property [ skos:example "'API', 'email', 'webform', 'unregisteredLetter'" ;
+            sh:datatype xsd:string ;
+            sh:description "Das Mittelwert zur Anfrage von Datenabrufen: API, E -Mail, Webform, UnregisteredLetter, Registrierter, SupportCenter."@de,
+                "the mean to request data retrieval: API, email, webform, unregisteredLetter, registeredLetter, supportCenter."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "Anfrageart" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:requestType ],
+        [ skos:example "'digital', 'physical'" ;
+            sh:datatype xsd:string ;
+            sh:description "Art der Datenunterstützung: Digital, physisch."@de,
+                "type of data support: digital, physical."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "Zugriffsart" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:accessType ],
+        [ skos:example "'application/gzip', 'text/csv'" ;
+            sh:datatype xsd:string ;
+            sh:description "Art der Medientypen (früher als MIME -Typen bekannt) wie die IANA definiert."@de,
+                "type of Media Types (formerly known as MIME types) as defined by the IANA."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "Format" ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:formatType ] ;
+    sh:targetClass gax-trust-framework:DataAccountExport .
+

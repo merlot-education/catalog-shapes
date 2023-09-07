@@ -1,0 +1,51 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:ServiceAccessPointShape a sh:NodeShape ;
+    sh:property [ skos:example "'accesspointABC'" ;
+            sh:datatype xsd:string ;
+            sh:description "Name des Zugangspunkts"@de,
+                "Name of the access point"@en ;
+            sh:name "Servicename" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:name ],
+        [ skos:example "''" ;
+            sh:datatype xsd:string ;
+            sh:description "Gastgeber des Zugangspunkts"@de,
+                "Host of the access point"@en ;
+            sh:name "host" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:host ],
+        [ skos:example "'TCP', 'UDP'" ;
+            sh:datatype xsd:string ;
+            sh:description "Protokoll des Zugangspunkts"@de,
+                "Protocol of the access point"@en ;
+            sh:name "protocol" ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:protocol ],
+        [ skos:example "'1.2'" ;
+            sh:datatype xsd:string ;
+            sh:description "Version des Zugriffspunkts"@de,
+                "Version of the access point"@en ;
+            sh:name "version" ;
+            sh:order 4 ;
+            sh:path gax-trust-framework:version ],
+        [ skos:example "'8888'" ;
+            sh:datatype xsd:string ;
+            sh:description "Port des Zugangspunkts"@de,
+                "Port of the access point"@en ;
+            sh:name "port" ;
+            sh:order 5 ;
+            sh:path gax-trust-framework:port ],
+        [ skos:example "'https://gaia-x.eu/openAPIdoc'" ;
+            sh:datatype xsd:string ;
+            sh:description "URL der OpenAPI -Dokumentation"@de,
+                "URL of the OpenAPI documentation"@en ;
+            sh:name "open a p i" ;
+            sh:order 6 ;
+            sh:path gax-trust-framework:openAPI ] ;
+    sh:targetClass gax-trust-framework:ServiceAccessPoint .
+

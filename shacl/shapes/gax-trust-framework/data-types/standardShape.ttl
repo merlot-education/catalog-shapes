@@ -1,0 +1,34 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:StandardShape a sh:NodeShape ;
+    sh:property [ skos:example "'ISO10303-242:2014'" ;
+            sh:datatype xsd:string ;
+            sh:description "Name des Standards."@de,
+                "Name of the standard."@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "title" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:title ],
+        [ skos:example "'https://www.iso.org/standard'" ;
+            sh:datatype xsd:anyURI ;
+            sh:description "Bietet einen Link zu Schemata oder Details zu angewandten Standards."@de,
+                "Provides a link to schemas or details about applied standards."@en ;
+            sh:minCount 1 ;
+            sh:name "standard reference" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:standardReference ],
+        [ skos:example "'International Organization for Standardization'" ;
+            sh:datatype xsd:string ;
+            sh:description "Herausgeber des Standards."@de,
+                "Publisher of the standard."@en ;
+            sh:maxCount 1 ;
+            sh:name "publisher" ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:publisher ] ;
+    sh:targetClass gax-trust-framework:Standard .
+

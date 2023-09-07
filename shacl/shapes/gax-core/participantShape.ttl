@@ -1,0 +1,7 @@
+@prefix gax-core: <http://w3id.org/gaia-x/core#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+gax-validation:ParticipantShape a sh:NodeShape ;
+    sh:targetClass gax-core:Participant .
+

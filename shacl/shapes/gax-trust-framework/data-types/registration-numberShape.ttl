@@ -1,0 +1,49 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:RegistrationNumberShape a sh:NodeShape ;
+    sh:property [ skos:example "'HRA 12345', '123456789'" ;
+            sh:datatype xsd:string ;
+            sh:description "Der staatlich erteilte Unternehmensnummer."@de,
+                "The state issued company number."@en ;
+            sh:maxCount 1 ;
+            sh:name "local" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:local ],
+        [ skos:example "'DEB1234.HRB123123', 'FR1234.123456789'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die European Unique Identifier (EUID) für Unternehmen im Europäischen Wirtschaftsgebiet, Island, Liechtenstein oder Norwegen und registriert im Business Registers Interconnection System (BRIS).Diese Zahl finden Sie über das EU Business Registers -Portal."@de,
+                "The European Unique Identifier (EUID) for business located in the European Economic Area, Iceland, Liechtenstein or Norway and registered in the Business Registers Interconnection System (BRIS). This number can be found via the EU Business registers portal."@en ;
+            sh:maxCount 1 ;
+            sh:name " e u i d" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:EUID ],
+        [ skos:example "'DE123456789101112', 'FR123456789101112'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die Registrierungs- und Identifikationsnummer (Economic Betreiber) (EORI)."@de,
+                "The Economic Operators Registration and Identification number (EORI)."@en ;
+            sh:maxCount 1 ;
+            sh:name " e o r i" ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:EORI ],
+        [ skos:example "'5133081508159', '3201012312340'" ;
+            sh:datatype xsd:string ;
+            sh:description "Die Mehrwert -Identifikationsnummer."@de,
+                "The VAT identification number."@en ;
+            sh:maxCount 1 ;
+            sh:name "vat i d" ;
+            sh:order 4 ;
+            sh:path gax-trust-framework:vatID ],
+        [ skos:example "'39120001LYGX6JEVCV44', '5299009D9BIL4D4UHT93'" ;
+            sh:datatype xsd:string ;
+            sh:description "Eindeutige Lei -Nummer im Sinne von https://www.gleif.org."@de,
+                "Unique LEI number as defined by https://www.gleif.org."@en ;
+            sh:maxCount 1 ;
+            sh:name "lei code" ;
+            sh:order 5 ;
+            sh:path gax-trust-framework:leiCode ] ;
+    sh:targetClass gax-trust-framework:RegistrationNumber .
+

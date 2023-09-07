@@ -1,0 +1,72 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:CertificatesShape a sh:NodeShape ;
+    sh:property [ skos:example "'ISO XYZ'" ;
+            sh:datatype xsd:string ;
+            sh:description "Relevantes Zertifikat für den Dienst"@de,
+                "Relevant certificate for the service"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "certificate name" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:certificateName ],
+        [ skos:example "'BSI IT-Grundschutz', 'ISO 27001', 'Trust in Cloud'" ;
+            sh:datatype xsd:string ;
+            sh:description "Art der Zertifikate"@de,
+                "Type of the certificates"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "certificate type" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:certificateType ],
+        [ skos:example "'Freetext'" ;
+            sh:datatype xsd:string ;
+            sh:description "Beschreibung des Tests für diesen Service"@de,
+                "Description of the scope of testing for this service"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "description of test scope" ;
+            sh:order 3 ;
+            sh:path gax-trust-framework:descriptionOfTestScope ],
+        [ skos:example "'TÜV Süd'" ;
+            sh:datatype xsd:string ;
+            sh:description "Zertifikatbehörde für diesen Dienst oder sein Zertifikat"@de,
+                "Certificate authority for this service or its certificate"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "certificate authority" ;
+            sh:order 4 ;
+            sh:path gax-trust-framework:certificateAuthority ],
+        [ skos:example "'certificates.pdf'" ;
+            sh:datatype xsd:string ;
+            sh:description "Dokument, das eine Zertifikatskopie enthält"@de,
+                "Document that contains a certificate copy"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "certificate document" ;
+            sh:order 5 ;
+            sh:path gax-trust-framework:certificateDocument ],
+        [ skos:example "'2122-12-21'" ;
+            sh:datatype xsd:date ;
+            sh:description "Datum, an dem das Zertifikat abläuft"@de,
+                "Date on which the certificate expires"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "expiration date" ;
+            sh:order 6 ;
+            sh:path gax-trust-framework:expirationDate ],
+        [ skos:example "'true', 'false'" ;
+            sh:datatype xsd:boolean ;
+            sh:description "Wird das Zertifikat regelmäßig geprüft?"@de,
+                "Is the certificate regularly audited?"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "regular audits" ;
+            sh:order 7 ;
+            sh:path gax-trust-framework:regularAudits ] ;
+    sh:targetClass gax-trust-framework:Certificates .
+

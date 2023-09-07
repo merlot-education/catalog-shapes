@@ -1,0 +1,29 @@
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <http://w3id.org/gaia-x/validation#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gax-validation:CheckSumShape a sh:NodeShape ;
+    sh:property [ skos:example "'5d68f20237c7c01c067b577ee5e490d1'" ;
+            sh:datatype xsd:string ;
+            sh:description "Wert der Überprüfungssumme"@de,
+                "Value of check sum"@en ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "checksum" ;
+            sh:order 1 ;
+            sh:path gax-trust-framework:checksum ],
+        [ skos:example "'md5'" ;
+            sh:datatype xsd:string ;
+            sh:description "Definierter Algorithmus zur Generierung von Prüfsummen"@de,
+                "Defines algorithm for generating check sum"@en ;
+            sh:in ( "md5" "sha-1" "ripemd-160" "sha-2" "sha-3" "blake2" "blake3" "other" ) ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:name "checksum algorithm" ;
+            sh:order 2 ;
+            sh:path gax-trust-framework:checksumAlgorithm ] ;
+    sh:targetClass gax-trust-framework:CheckSum .
+

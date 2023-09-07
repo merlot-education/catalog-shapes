@@ -1,0 +1,285 @@
+@prefix merlot: <http://w3id.org/gaia-x/merlot#> .
+@prefix gax-trust-framework: <http://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix vcard: <https://www.w3.org/2006/vcard/ns#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix did: <https://www.w3.org/TR/did-core/#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix gax-core: <http://w3id.org/gaia-x/core#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix ids: <https://w3id.org/idsa/core/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix voaf: <http://purl.org/vocommons/voaf#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix schema: <http://schema.org/> .
+@prefix cred: <https://www.w3.org/2018/credentials#> .
+
+
+merlot: 
+a		voaf:Vocabulary, owl:Ontology ;
+rdfs:label		"Gaia-X Merlot Ontology"@en ;
+dct:title		"Gaia-X Merlot Ontology"@en ;
+dct:abstract		"todo" ;
+cc:license		<http://www.apache.org/licenses/LICENSE-2.0> ;
+dct:creator		"MERLOT" ;
+dct:contributor		"Marc Buskies" ;
+dct:created		"2023-07-31T13:00:00+02:00"^^xsd:dateTimeStamp ;
+owl:versionInfo		"22.04" ;
+vann:preferredNamespaceUri		"http://w3id.org/gaia-x/merlot#" ;
+vann:preferredNamespacePrefix		"merlot" ;
+void:vocabulary 		vann:, void:, voaf:, dct: ;
+dct:modified		"2023-07-28T15:47:24+02:00"^^xsd:dateTimeStamp ;
+.
+
+################## 
+##MerlotServiceOfferingDataDelivery
+##################
+
+merlot:MerlotServiceOfferingDataDelivery
+	a		 owl:Class;
+	rdfs:label		 "Merlot Service Offering Data Delivery"@en ;
+	rdfs:subClassOf		merlot:MerlotServiceOffering ;
+. 
+
+merlot:exchangeCountOption
+	a		 owl:ObjectProperty ;
+	rdfs:label		 "exchange count option"@en ;
+	rdfs:domain		 merlot:MerlotServiceOfferingDataDelivery ;
+	rdfs:range		 merlot:DataExchangeCount ;
+	rdfs:comment		 "Option for allowed count of data exchanges" ;
+. 
+
+merlot:exchangeCountUnlimited
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "exchange count unlimited"@en ;
+	rdfs:domain		 merlot:MerlotServiceOfferingDataDelivery ;
+	rdfs:range		 xsd:boolean ;
+	rdfs:comment		 "Allow unlimited number of transfers as an option." ;
+. 
+
+merlot:dataTransferType
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "data transfer type"@en ;
+	rdfs:domain		 merlot:MerlotServiceOfferingDataDelivery ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Type of data transfer" ;
+. 
+
+merlot:dataAccessType
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "data access type"@en ;
+	rdfs:domain		 merlot:MerlotServiceOfferingDataDelivery ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Data Access Type" ;
+. 
+
+################## 
+##MerlotServiceOffering
+##################
+
+merlot:MerlotServiceOffering
+	a		 owl:Class;
+	rdfs:label		 "Merlot Service Offering"@en ;
+	rdfs:subClassOf		gax-trust-framework:ServiceOffering ;
+. 
+
+merlot:creationDate
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "creation date"@en ;
+	rdfs:domain		 merlot:MerlotServiceOffering ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Creation Date" ;
+. 
+
+merlot:attachments
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "attachments"@en ;
+	rdfs:domain		 merlot:MerlotServiceOffering ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Attachments" ;
+. 
+
+merlot:exampleCosts
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "example costs"@en ;
+	rdfs:domain		 merlot:MerlotServiceOffering ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Example Costs" ;
+. 
+
+merlot:runtimeOption
+	a		 owl:ObjectProperty ;
+	rdfs:label		 "runtime option"@en ;
+	rdfs:domain		 merlot:MerlotServiceOffering ;
+	rdfs:range		 merlot:Runtime ;
+	rdfs:comment		 "Option for a runtime of the Service Offering" ;
+. 
+
+merlot:runtimeUnlimited
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "runtime unlimited"@en ;
+	rdfs:domain		 merlot:MerlotServiceOffering ;
+	rdfs:range		 xsd:boolean ;
+	rdfs:comment		 "Allow unlimited runtime as an option." ;
+. 
+
+merlot:merlotTermsAndConditionsAccepted
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "merlot terms and conditions accepted"@en ;
+	rdfs:domain		 merlot:MerlotServiceOffering ;
+	rdfs:range		 xsd:boolean ;
+	rdfs:comment		 "Merlot Terms and Conditions have been read and accepted" ;
+. 
+
+################## 
+##MerlotServiceOfferingSaaS
+##################
+
+merlot:MerlotServiceOfferingSaaS
+	a		 owl:Class;
+	rdfs:label		 "Merlot Service Offering Saa S"@en ;
+	rdfs:subClassOf		merlot:MerlotServiceOffering ;
+. 
+
+merlot:hardwareRequirements
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "hardware requirements"@en ;
+	rdfs:domain		 merlot:MerlotServiceOfferingSaaS ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Hardware Requirements" ;
+. 
+
+merlot:userCountOption
+	a		 owl:ObjectProperty ;
+	rdfs:label		 "user count option"@en ;
+	rdfs:domain		 merlot:MerlotServiceOfferingSaaS ;
+	rdfs:range		 merlot:AllowedUserCount ;
+	rdfs:comment		 "Option for allowed count of users for the software" ;
+. 
+
+merlot:userCountUnlimited
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "user count unlimited"@en ;
+	rdfs:domain		 merlot:MerlotServiceOfferingSaaS ;
+	rdfs:range		 xsd:boolean ;
+	rdfs:comment		 "Allow unlimited number of users as an option." ;
+. 
+
+################## 
+##MerlotServiceOfferingCooperation
+##################
+
+merlot:MerlotServiceOfferingCooperation
+	a		 owl:Class;
+	rdfs:label		 "Merlot Service Offering Cooperation"@en ;
+	rdfs:subClassOf		merlot:MerlotServiceOffering ;
+. 
+
+################## 
+##Runtime
+##################
+
+merlot:Runtime
+	a		 owl:Class;
+	rdfs:label		 "Runtime"@en ;
+. 
+
+merlot:runtimeCount
+	a		 owl:ObjectProperty ;
+	rdfs:label		 "runtime count"@en ;
+	rdfs:domain		 merlot:Runtime ;
+	rdfs:range		 xsd:number ;
+	rdfs:comment		 "Number part of the runtime" ;
+. 
+
+merlot:runtimeMeasurement
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "runtime measurement"@en ;
+	rdfs:domain		 merlot:Runtime ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Measurement part of the runtime" ;
+. 
+
+################## 
+##AllowedUserCount
+##################
+
+merlot:AllowedUserCount
+	a		 owl:Class;
+	rdfs:label		 "Allowed User Count"@en ;
+. 
+
+merlot:userCountUpTo
+	a		 owl:ObjectProperty ;
+	rdfs:label		 "user count up to"@en ;
+	rdfs:domain		 merlot:AllowedUserCount ;
+	rdfs:range		 xsd:number ;
+	rdfs:comment		 "Number of users up to which the usage is allowed." ;
+. 
+
+################## 
+##DataExchangeCount
+##################
+
+merlot:DataExchangeCount
+	a		 owl:Class;
+	rdfs:label		 "Data Exchange Count"@en ;
+. 
+
+merlot:exchangeCountUpTo
+	a		 owl:ObjectProperty ;
+	rdfs:label		 "exchange count up to"@en ;
+	rdfs:domain		 merlot:DataExchangeCount ;
+	rdfs:range		 xsd:number ;
+	rdfs:comment		 "Number of data exchanges up to which the transfer is allowed." ;
+. 
+
+################## 
+##MerlotOrganization
+##################
+
+merlot:MerlotOrganization
+	a		 owl:Class;
+	rdfs:label		 "Merlot Organization"@en ;
+	rdfs:subClassOf		gax-trust-framework:LegalPerson, org:Organization ;
+. 
+
+merlot:orgaName
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "orga name"@en ;
+	rdfs:domain		 merlot:MerlotOrganization ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Short Organization Name" ;
+. 
+
+merlot:merlotId
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "merlot id"@en ;
+	rdfs:domain		 merlot:MerlotOrganization ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Merlot ID." ;
+. 
+
+merlot:addressCode
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "address code"@en ;
+	rdfs:domain		 merlot:MerlotOrganization ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Address Code." ;
+. 
+
+merlot:termsConditionsLink
+	a		 owl:DatatypeProperty ;
+	rdfs:label		 "terms conditions link"@en ;
+	rdfs:domain		 merlot:MerlotOrganization ;
+	rdfs:range		 xsd:string ;
+	rdfs:comment		 "Terms and Conditions Link" ;
+. 
+
