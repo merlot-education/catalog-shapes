@@ -1,7 +1,7 @@
 import os
 import warnings
 
-shape_base_folder = "shacl/shapes/"
+shape_base_folder = os.path.join(os.path.dirname(__file__), "shacl/shapes/")
 shape_output_path = os.path.join(shape_base_folder, "mergedShapes.ttl")
 
 prefixes = set()
