@@ -125,7 +125,7 @@ gax-validation:MerlotServiceOfferingSaaSShape a sh:NodeShape ;
             sh:description "Eine auflösbare Verbindung zu den für diesen Dienst gelten Bedingungen."@de,
                 "a resolvable link to the Terms and Conditions applying to that service."@en ;
             sh:minCount 1 ;
-            sh:name "Anbieter AGB" ;
+            sh:name "Serviceangebotspezifische Geschäftsbedingungen" ;
             sh:node gax-validation:TermsAndConditionsShape ;
             sh:order 2 ;
             sh:path gax-trust-framework:termsAndConditions ],
