@@ -148,13 +148,6 @@ gax-validation:MerlotServiceOfferingCooperationShape a sh:NodeShape ;
             sh:name "Erstelldatum" ;
             sh:order 1 ;
             sh:path merlot:creationDate ],
-        [ skos:example "'http://example.com'" ;
-            sh:datatype xsd:string ;
-            sh:description "Anhänge"@de,
-                "Attachments"@en ;
-            sh:name "Anhänge" ;
-            sh:order 2 ;
-            sh:path merlot:attachments ],
         [ skos:example "'1€ / Download'" ;
             sh:datatype xsd:string ;
             sh:description "Beispielkosten"@de,
