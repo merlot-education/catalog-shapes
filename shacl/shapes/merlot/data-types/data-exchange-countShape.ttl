@@ -10,6 +10,7 @@ gax-validation:DataExchangeCountShape a sh:NodeShape ;
     sh:property 
         [ skos:example "'5'" ;
             sh:datatype xsd:number ;
+            sh:minInclusive 0 ;
             sh:description "Maximal zulässige Anzahl an Datenaustauschen. Auf 0 setzen für 'unbegrenzt'."@de,
                 "Number of data exchanges up to which the transfer is allowed. Set to 0 for 'unlimited'."@en ;
             sh:maxCount 1 ;
