@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run merge script
+        run: | 
+          python3 merge_shapes.py
+      - name: Upload release attachment
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const fs = require('fs');
+            const tag = context.ref.replace("refs/tags/", "");
+            console.log("tag = ", tag);
+            // Get release for this tag
+            const release = await github.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag
+            });
+            // Upload the release asset
+            await github.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              name: "mergedShapes.ttl",
+              data: await fs.readFileSync("shacl/shapes/mergedShapes.ttl")
+            });
