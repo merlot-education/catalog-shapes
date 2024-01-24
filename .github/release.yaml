@@ -1,0 +1,40 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Image tag
+        shell: bash {0}
+        run: |
+          tag=$(git describe --tags HEAD)
+          echo "tag=$tag" >> $GITHUB_ENV
+          echo "environment=demo" >> $GITHUB_ENV
+
+      - name: Repo environment variable
+        run: echo "repository=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Run merge script
+        run: python3 merge_shapes.py
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          files: |
+            shacl/shapes/mergedShapes.ttl
