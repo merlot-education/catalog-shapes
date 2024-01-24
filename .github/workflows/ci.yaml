@@ -35,7 +35,7 @@ jobs:
       - name: Release
         uses: Shopify/upload-to-release@v1
         with:
-          name: ${{ tag }}
+          name: ${{ env.tag }}
           path: shacl/shapes/mergedShapes.ttl
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           content-type: text/plain
