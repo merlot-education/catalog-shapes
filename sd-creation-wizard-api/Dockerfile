@@ -8,5 +8,5 @@ RUN apk add --no-cache git maven &&\
 
 FROM eclipse-temurin:17-jre-alpine
 COPY --from=build /sd-creation-wizard-api/target/creation-wizard-api*.jar /opt/creation-wizard-api.jar
-COPY shapes/ /shapes/
+COPY sd-creation-wizard-api/shapes/ /shapes/
 ENTRYPOINT ["java", "-jar","/opt/creation-wizard-api.jar"]
