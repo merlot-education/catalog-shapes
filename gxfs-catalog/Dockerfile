@@ -4,7 +4,7 @@ ARG SERVICE_VERSION=b6939bd8
 
 COPY catalog-shapes/ /catalog-shapes/
 
-RUN apk add --no-cache python3
+RUN apk add --no-cache python3 &&\
     cd /catalog-shapes &&\
     python3 merge_shapes.py
 
