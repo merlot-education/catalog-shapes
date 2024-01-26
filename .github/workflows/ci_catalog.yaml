@@ -1,6 +1,7 @@
 name: Continuous Integration GXFS Catalog
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "main"
@@ -19,11 +20,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Image tag
+      - name: Demo image tag
+        if: startsWith(github.ref, 'refs/tags/')
         shell: bash {0}
         run: |
-          tag="$(awk -F '=' '/SERVICE_VERSION/{ print $2; exit; }' Dockerfile)"
+          tag=$(git describe --tags HEAD)
           echo "tag=$tag" >> $GITHUB_ENV
+          echo "environment=demo" >> $GITHUB_ENV
+
+      - name: Dev image tag
+        if: startsWith(github.ref, 'refs/heads/')
+        shell: bash {0}
+        run: |
+          tag="$(git rev-parse --short HEAD)"
+          echo "tag=$tag" >> $GITHUB_ENV
+          echo "environment=dev" >> $GITHUB_ENV
 
       - name: Repo + image name environment variable
         run: echo "repository=${GITHUB_REPOSITORY,,}/gxfs-catalog" >> $GITHUB_ENV
