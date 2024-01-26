@@ -10,9 +10,9 @@ FROM eclipse-temurin:17-jre-alpine
 COPY --from=build /sd-creation-wizard-api/target/creation-wizard-api*.jar /opt/creation-wizard-api.jar
 COPY catalog-shapes/shacl/shapes/merlot/ /shapes/merlot/
 
-RUN rm -rf /shapes/data-types &&\
+RUN rm -rf /shapes/merlot/data-types &&\
     rm /shapes/merlot/gax-service/merlot-serviceOfferingShape.ttl &&\
-    mv /shapes/merlot/gax-participant /shapes/Participant &&\
-    mv /shapes/merlot/gax-service /shapes/Service
+    mv /shapes/merlot/gax-participant /shapes/merlot/Participant &&\
+    mv /shapes/merlot/gax-service /shapes/merlot/Service
 
 ENTRYPOINT ["java", "-jar","/opt/creation-wizard-api.jar"]

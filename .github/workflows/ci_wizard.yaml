@@ -3,6 +3,9 @@ name: Continuous Integration Wizard API
 on:
   workflow_dispatch:
   push:
+    paths:
+      - 'catalog-shapes/**'
+      - 'sd-creation-wizard-api/**'
     branches:
       - "main"
     tags:

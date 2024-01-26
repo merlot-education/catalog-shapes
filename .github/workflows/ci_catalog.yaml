@@ -3,6 +3,9 @@ name: Continuous Integration GXFS Catalog
 on:
   workflow_dispatch:
   push:
+    paths:
+      - 'catalog-shapes/**'
+      - 'gxfs-catalog/**'
     branches:
       - "main"
     tags:
