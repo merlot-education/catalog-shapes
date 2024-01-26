@@ -4,7 +4,8 @@ ARG SERVICE_VERSION=b6939bd8
 
 COPY catalog-shapes/ /catalog-shapes/
 
-RUN cd /catalog-shapes &&\
+RUN apk add --no-cache python3
+    cd /catalog-shapes &&\
     python3 merge_shapes.py
 
 COPY gxfs-catalog/add_merlot_pubkey.patch /add_merlot_pubkey.patch
