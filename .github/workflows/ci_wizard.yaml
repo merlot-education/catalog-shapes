@@ -35,8 +35,8 @@ jobs:
           echo "tag=$tag" >> $GITHUB_ENV
           echo "environment=dev" >> $GITHUB_ENV
 
-      - name: Repo environment variable
-        run: echo "repository=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+      - name: Repo + image name environment variable
+        run: echo "repository=${GITHUB_REPOSITORY,,}/sd-creation-wizard-api" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -58,9 +58,9 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.repository }}:${{ env.tag }},ghcr.io/${{ env.repository }}:latest
 
-      - name: Dispatch update
-        run: |
-          curl -H "Accept: application/vnd.github+json" \
-          -H "Authorization: token ${{ secrets.GIT_OPS_TOKEN }}" \
-          --request POST \
-          --data '{"event_type": "image_update", "client_payload": { "environment": "${{ env.environment }}", "tag": "${{ env.tag }}", "key": ".image.tag", "app": "creation-wizard-api" }}' https://api.github.com/repos/merlot-education/gitops/dispatches
+      #- name: Dispatch update
+      #  run: |
+      #    curl -H "Accept: application/vnd.github+json" \
+      #    -H "Authorization: token ${{ secrets.GIT_OPS_TOKEN }}" \
+      #    --request POST \
+      #    --data '{"event_type": "image_update", "client_payload": { "environment": "${{ env.environment }}", "tag": "${{ env.tag }}", "key": ".image.tag", "app": "creation-wizard-api" }}' https://api.github.com/repos/merlot-education/gitops/dispatches
