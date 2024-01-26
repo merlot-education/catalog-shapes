@@ -1,7 +1,7 @@
 FROM maven:3-eclipse-temurin-17-alpine AS build
 
 ARG SERVICE_VERSION=b6939bd8
-COPY add_merlot_pubkey.patch /add_merlot_pubkey.patch
+COPY gxfs-catalog/add_merlot_pubkey.patch /add_merlot_pubkey.patch
 RUN apk add --no-cache git maven &&\
     git clone -b main https://gitlab.eclipse.org/eclipse/xfsc/cat/fc-service.git &&\
     cd /fc-service &&\
