@@ -6,7 +6,7 @@ on:
     paths:
       - 'catalog-shapes/**'
       - 'gxfs-catalog/**'
-      - '.github/workflows/**'
+      - '.github/workflows/ci_catalog.yaml'
     branches:
       - "main"
     tags:
