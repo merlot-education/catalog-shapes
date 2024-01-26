@@ -6,7 +6,7 @@ on:
     paths:
       - 'catalog-shapes/**'
       - 'sd-creation-wizard-api/**'
-      - '.github/workflows/**'
+      - '.github/workflows/ci_wizard.yaml'
     branches:
       - "main"
     tags:
