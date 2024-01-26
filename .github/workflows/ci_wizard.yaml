@@ -1,6 +1,7 @@
 name: Continuous Integration Wizard API
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "main"
