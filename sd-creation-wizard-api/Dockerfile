@@ -8,11 +8,11 @@ RUN apk add --no-cache git maven &&\
 
 FROM eclipse-temurin:17-jre-alpine
 COPY --from=build /sd-creation-wizard-api/target/creation-wizard-api*.jar /opt/creation-wizard-api.jar
-COPY catalog-shapes/shacl/shapes/merlot/ /shapes/
+COPY catalog-shapes/shacl/shapes/merlot/ /shapes/merlot/
 
 RUN rm -rf /shapes/data-types &&\
-    rm /shapes/gax-service/merlot-serviceOfferingShape.ttl &&\
-    mv /shapes/gax-participant /shapes/Participant &&\
-    mv /shapes/gax-service /shapes/Service
+    rm /shapes/merlot/gax-service/merlot-serviceOfferingShape.ttl &&\
+    mv /shapes/merlot/gax-participant /shapes/Participant &&\
+    mv /shapes/merlot/gax-service /shapes/Service
 
 ENTRYPOINT ["java", "-jar","/opt/creation-wizard-api.jar"]
