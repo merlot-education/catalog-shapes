@@ -6,8 +6,10 @@ on:
     paths:
       - 'catalog-shapes/**'
       - 'sd-creation-wizard-api/**'
+      - '.github/workflows/**'
     branches:
       - "main"
+  push:
     tags:
       - "*"
 

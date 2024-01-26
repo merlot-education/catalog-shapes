@@ -6,8 +6,10 @@ on:
     paths:
       - 'catalog-shapes/**'
       - 'gxfs-catalog/**'
+      - '.github/workflows/**'
     branches:
       - "main"
+  push:
     tags:
       - "*"
 
