@@ -13,13 +13,13 @@ COPY gxfs-catalog/truncate_schemas.patch /truncate_schemas.patch
 RUN apk add --no-cache git maven &&\
     git clone -b main https://gitlab.eclipse.org/eclipse/xfsc/cat/fc-service.git &&\
     cd /fc-service &&\
+	git checkout $SERVICE_VERSION &&\
 	git apply /add_merlot_pubkey.patch &&\
 	git apply /truncate_schemas.patch &&\
     rm -rf fc-service-core/src/main/resources/defaultschema/ontology &&\
     rm fc-service-core/src/main/resources/defaultschema/shacl/mergedShapesGraph.ttl &&\
     cp /catalog-shapes/shacl/shapes/mergedShapes.ttl fc-service-core/src/main/resources/defaultschema/shacl/mergedShapesGraph.ttl &&\
     cp -r /catalog-shapes/shacl/ontology fc-service-core/src/main/resources/defaultschema/ontology &&\
-	git checkout $SERVICE_VERSION &&\
     mvn clean package -pl fc-service-server -am -Dmaven.test.skip=true
 
 FROM eclipse-temurin:17-jre-alpine
