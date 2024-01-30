@@ -1,0 +1,22 @@
+diff --git a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/schemastore/impl/SchemaStoreImpl.java b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/schemastore/impl/SchemaStoreImpl.java
+index 3bf215d7..432d384b 100644
+--- a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/schemastore/impl/SchemaStoreImpl.java
++++ b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/schemastore/impl/SchemaStoreImpl.java
+@@ -69,11 +69,17 @@ public class SchemaStoreImpl implements SchemaStore {
+ 
+   private static final Map<SchemaType, ContentAccessor> COMPOSITE_SCHEMAS = new ConcurrentHashMap<>();
+ 
++  private int truncateSchemas(Session session){
++    String hql = String.format("delete from SchemaRecord");
++    Query query = session.createQuery(hql);
++    return query.executeUpdate();
++  }
+ 
+   @Override
+   public int initializeDefaultSchemas() {
+     Transaction tx = null;  
+     try (Session session = sessionFactory.openSession()) {
++      truncateSchemas(session);
+       int count = 0;
+       Long found = session.createQuery("select count(s) from SchemaRecord s", Long.class).getSingleResult();
+       if (found == 0) {
