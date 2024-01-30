@@ -243,22 +243,6 @@ merlot:merlotId
 	rdfs:comment		 "Merlot ID." ;
 . 
 
-merlot:addressCode
-	a		 owl:DatatypeProperty ;
-	rdfs:label		 "address code"@en ;
-	rdfs:domain		 merlot:MerlotOrganization ;
-	rdfs:range		 xsd:string ;
-	rdfs:comment		 "Address Code." ;
-. 
-
-merlot:mailAddress
-	a		 owl:DatatypeProperty ;
-	rdfs:label		 "mail address"@en ;
-	rdfs:domain		 merlot:MerlotOrganization ;
-	rdfs:range		 xsd:string ;
-	rdfs:comment		 "Mail-Address." ;
-. 
-
 merlot:termsAndConditions
 	a		 owl:DatatypeProperty ;
 	rdfs:label		 "terms conditions"@en ;
