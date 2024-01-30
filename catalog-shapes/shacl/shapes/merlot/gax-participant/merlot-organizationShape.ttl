@@ -227,4 +227,3 @@ gax-validation:TermsAndConditionsShape a sh:NodeShape ;
             sh:order 2 ;
             sh:path gax-trust-framework:hash ] ;
     sh:targetClass gax-trust-framework:TermsAndConditions .
-
