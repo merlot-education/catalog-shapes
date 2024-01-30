@@ -96,15 +96,6 @@ gax-validation:MerlotOrganizationShape a sh:NodeShape ;
             sh:name "Name der Organisation" ;
             sh:order 101 ;
             sh:path merlot:orgaName ],
-        [ skos:example "'1234'" ;
-            sh:datatype xsd:string ;
-            sh:description "Merlot ID."@de,
-                "Merlot ID."@en ;
-            sh:maxCount 1 ;
-            sh:minCount 1 ;
-            sh:name "MERLOT ID" ;
-            sh:order 102 ;
-            sh:path merlot:merlotId ],
         [ skos:example "'https://gaia-x.eu'" ;
             sh:description "Eine auflösbare Verbindung zu den für diesen Dienst gelten Bedingungen."@de,
                 "a resolvable link to the Terms and Conditions applying to that service."@en ;

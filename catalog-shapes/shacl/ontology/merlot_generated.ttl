@@ -235,14 +235,6 @@ merlot:orgaName
 	rdfs:comment		 "Short Organization Name" ;
 . 
 
-merlot:merlotId
-	a		 owl:DatatypeProperty ;
-	rdfs:label		 "merlot id"@en ;
-	rdfs:domain		 merlot:MerlotOrganization ;
-	rdfs:range		 xsd:string ;
-	rdfs:comment		 "Merlot ID." ;
-. 
-
 merlot:termsAndConditions
 	a		 owl:DatatypeProperty ;
 	rdfs:label		 "terms conditions"@en ;
