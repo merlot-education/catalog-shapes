@@ -1,4 +1,4 @@
-# MERLOT PDF Generation Service
+# MERLOT XFSC FC Shapes
 This repository contains the XFSC Federated Catalogue schemas for service offerings and participants that are used in the MERLOT marketplace.
 
 It also contains the necessary build files to build the catalogue as well as the XFSC Self-Description Wizard API with these shapes pre-loaded.
