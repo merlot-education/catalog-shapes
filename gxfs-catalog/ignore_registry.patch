@@ -1,5 +1,5 @@
 diff --git a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
-index 6daa65be..f7c5daa3 100644
+index 6daa65be..87832015 100644
 --- a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
 @@ -46,6 +46,7 @@ import org.apache.jena.vocabulary.RDF;
@@ -86,7 +86,7 @@ index 6daa65be..f7c5daa3 100644
      log.debug("hasPEMTrustAnchorAndIsNotDeprecated.exit; returning: {}", exp);
      return exp;
    }
-@@ -971,3 +989,51 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -971,3 +989,50 @@ public class VerificationServiceImpl implements VerificationService {
    }
  
  }
@@ -129,8 +129,7 @@ index 6daa65be..f7c5daa3 100644
 +      sc.init(null, trustAllCerts, new java.security.SecureRandom());
 +
 +      HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-+      HttpsURLConnection.setDefaultHostnameVerifier(
-+              (hostname, sslSession) -> hostname.equals("localhost"));
++      HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> true);
 +    } catch (KeyManagementException e) {
 +      e.printStackTrace();
 +    } catch (NoSuchAlgorithmException e) {
