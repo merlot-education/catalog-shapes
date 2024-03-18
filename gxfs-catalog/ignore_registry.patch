@@ -1,0 +1,62 @@
+diff --git a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
+index 6daa65be..14e85af0 100644
+--- a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
++++ b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
+@@ -618,14 +618,11 @@ public class VerificationServiceImpl implements VerificationService {
+     String[] uri_parts = uri.getSchemeSpecificPart().split(":");
+     String did_json;
+     if (uri_parts[0].equals("web")) {
+-      String[] _parts = uri_parts[1].split("#");
+-      URL url;
+-      if (_parts.length == 1) {
+-        url = new URL("https://" + _parts[0] + "/.well-known/did.json");
+-      } else {
+-        url = new URL("https://" + _parts[0] + "/.well-known/did.json#" + _parts[1]);
+-      }
+-      log.debug("readDIDFromURI; requesting DIDDocument from: {}", url.toString());
++      String didWeb = uri.toString()
++              .replace("did:web:", "") // remove did type prefix
++              .replaceFirst("#.*", ""); // remove verification method reference
++      URL url = new URL(getDidDocumentUri(didWeb));
++      log.debug("readDIDFromURI; requesting DIDDocument from: {}", url);
+       InputStream stream = url.openStream();
+       did_json = IOUtils.toString(stream, StandardCharsets.UTF_8);
+     } else {
+@@ -636,6 +633,26 @@ public class VerificationServiceImpl implements VerificationService {
+     return result;
+   }
+ 
++  private static String getDidDocumentUri(String didWeb) {
++    boolean containsSubpath = didWeb.contains(":");
++    StringBuilder didDocumentUriBuilder = new StringBuilder();
++    didDocumentUriBuilder.append(didWeb
++            .replace(":", "/") // Replace ":" with "/" in the method specific identifier to
++            // obtain the fully qualified domain name and optional path.
++            .replace("%3A", ":")); // If the domain contains a port percent decode the colon.
++
++    // Generate an HTTPS URL to the expected location of the DID document by prepending https://.
++    didDocumentUriBuilder.insert(0, "https://");
++    if (!containsSubpath) {
++      // If no path has been specified in the URL, append /.well-known.
++      didDocumentUriBuilder.append("/.well-known");
++    }
++    // Append /did.json to complete the URL.
++    didDocumentUriBuilder.append("/did.json");
++
++    return didDocumentUriBuilder.toString();
++  }
++
+   private Map<String, Object> extractRelevantVerificationMethod(List<Map<String, Object>> methods, URI verificationMethodURI) {
+     //TODO wait for answer https://gitlab.com/gaia-x/lab/compliance/gx-compliance/-/issues/22
+     log.debug("extractRelevantVerificationMethod; methods: {}, uri: {}", methods, verificationMethodURI);
+@@ -695,10 +712,6 @@ public class VerificationServiceImpl implements VerificationService {
+     //Second, extract required information
+     Instant exp = relevant.getNotAfter().toInstant();
+ 
+-    if (!checkTrustAnchor(uri)) {
+-      throw new VerificationException("Signatures error; The trust anchor is not set in the registry. URI: " + uri);
+-    }
+-
+     log.debug("hasPEMTrustAnchorAndIsNotDeprecated.exit; returning: {}", exp);
+     return exp;
+   }
