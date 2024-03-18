@@ -1,38 +1,34 @@
 diff --git a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
-index 6daa65be..9775217d 100644
+index 6daa65be..71e4dee5 100644
 --- a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
-@@ -70,6 +70,10 @@ import org.apache.jena.riot.system.stream.StreamManager;
+@@ -46,6 +46,7 @@ import org.apache.jena.vocabulary.RDF;
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+ 
+ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.context.annotation.Configuration;
+ import org.springframework.stereotype.Component;
+ import org.topbraid.shacl.validation.ValidationUtil;
+ import org.topbraid.shacl.vocabulary.SH;
+@@ -56,6 +57,8 @@ import java.net.URI;
+ import java.net.URL;
+ import java.nio.charset.StandardCharsets;
+ import java.security.GeneralSecurityException;
++import java.security.KeyManagementException;
++import java.security.NoSuchAlgorithmException;
+ import java.security.Security;
+ import java.security.cert.CertificateException;
+ import java.security.cert.CertificateFactory;
+@@ -70,6 +73,8 @@ import org.apache.jena.riot.system.stream.StreamManager;
  import org.springframework.beans.factory.annotation.Qualifier;
  import org.springframework.beans.factory.annotation.Value;
  
-+import javax.net.ssl.HostnameVerifier;
-+import javax.net.ssl.HttpsURLConnection;
-+import javax.net.ssl.SSLSession;
++import javax.net.ssl.*;
 +
  import static org.apache.jena.rdf.model.ResourceFactory.*;
  
  
-@@ -95,6 +99,9 @@ public class VerificationServiceImpl implements VerificationService {
-   @Value("${federated-catalogue.verification.service-offering.type}")
-   private String serviceOfferingType; //"http://w3id.org/gaia-x/service#ServiceOffering";
- 
-+  @Autowired
-+  private WhitelistHostnameVerifier whitelistHostnameVerifier;
-+
-   @Autowired
-   private SchemaStore schemaStore;
- 
-@@ -583,6 +590,8 @@ public class VerificationServiceImpl implements VerificationService {
-       throw new VerificationException("Signatures error; Unknown Verification Method: " + uri);
-     }
- 
-+    HttpsURLConnection.setDefaultHostnameVerifier(whitelistHostnameVerifier); // ignore SSL certs for localhost
-+
-     DIDDocument diDoc = readDIDfromURI(uri);
-     log.debug("getVerifiedVerifier; methods: {}", diDoc.getVerificationMethods());
-     List<Map<String, Object>> available_jwks = (List<Map<String, Object>>) diDoc.toMap().get("verificationMethod");
-@@ -618,14 +627,11 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -618,14 +623,11 @@ public class VerificationServiceImpl implements VerificationService {
      String[] uri_parts = uri.getSchemeSpecificPart().split(":");
      String did_json;
      if (uri_parts[0].equals("web")) {
@@ -52,7 +48,7 @@ index 6daa65be..9775217d 100644
        InputStream stream = url.openStream();
        did_json = IOUtils.toString(stream, StandardCharsets.UTF_8);
      } else {
-@@ -636,6 +642,26 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -636,6 +638,26 @@ public class VerificationServiceImpl implements VerificationService {
      return result;
    }
  
@@ -79,7 +75,7 @@ index 6daa65be..9775217d 100644
    private Map<String, Object> extractRelevantVerificationMethod(List<Map<String, Object>> methods, URI verificationMethodURI) {
      //TODO wait for answer https://gitlab.com/gaia-x/lab/compliance/gx-compliance/-/issues/22
      log.debug("extractRelevantVerificationMethod; methods: {}, uri: {}", methods, verificationMethodURI);
-@@ -695,10 +721,6 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -695,10 +717,6 @@ public class VerificationServiceImpl implements VerificationService {
      //Second, extract required information
      Instant exp = relevant.getNotAfter().toInstant();
  
@@ -90,24 +86,53 @@ index 6daa65be..9775217d 100644
      log.debug("hasPEMTrustAnchorAndIsNotDeprecated.exit; returning: {}", exp);
      return exp;
    }
-@@ -971,3 +993,20 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -971,3 +989,49 @@ public class VerificationServiceImpl implements VerificationService {
    }
  
  }
 +
-+@Component
-+class WhitelistHostnameVerifier implements HostnameVerifier {
-+  // these hosts get whitelisted
-+  private Set whitelist = Set.of("localhost:8443");
-+  private HostnameVerifier defaultHostnameVerifier =
-+          HttpsURLConnection.getDefaultHostnameVerifier();
++@Configuration
++@Slf4j
++class SSLConfig {
++  /**
++   * Disables the SSL certificate checking for new instances of {@link HttpsURLConnection} This has been created to
++   * aid testing on a local box, not for use on production.
++   */
 +
-+  @Override
-+  public boolean verify(String host, SSLSession session) {
-+    if (whitelist.contains(host)) {
-+      return true;
++  public SSLConfig(@Value("${federated-catalogue.ignore-ssl:false}") boolean ignoreSsl) {
++    if (ignoreSsl) {
++      disableSSLCertificateChecking();
++      log.info("Disabling SSL verification for web requests.");
 +    }
-+    // important: use default verifier for all other hosts
-+    return defaultHostnameVerifier.verify(host, session);
++  }
++
++  private static void disableSSLCertificateChecking() {
++    TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
++      public X509Certificate[] getAcceptedIssuers() {
++        return null;
++      }
++
++      @Override
++      public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
++        // Not implemented
++      }
++
++      @Override
++      public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
++        // Not implemented
++      }
++    } };
++
++    try {
++      SSLContext sc = SSLContext.getInstance("TLS");
++
++      sc.init(null, trustAllCerts, new java.security.SecureRandom());
++
++      HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
++    } catch (KeyManagementException e) {
++      e.printStackTrace();
++    } catch (NoSuchAlgorithmException e) {
++      e.printStackTrace();
++    }
 +  }
 +}
