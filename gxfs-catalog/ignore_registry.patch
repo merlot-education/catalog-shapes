@@ -1,8 +1,29 @@
 diff --git a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
-index 6daa65be..14e85af0 100644
+index 6daa65be..9945eae5 100644
 --- a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
-@@ -618,14 +618,11 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -70,6 +70,10 @@ import org.apache.jena.riot.system.stream.StreamManager;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.beans.factory.annotation.Value;
+ 
++import javax.net.ssl.HostnameVerifier;
++import javax.net.ssl.HttpsURLConnection;
++import javax.net.ssl.SSLSession;
++
+ import static org.apache.jena.rdf.model.ResourceFactory.*;
+ 
+ 
+@@ -583,6 +587,9 @@ public class VerificationServiceImpl implements VerificationService {
+       throw new VerificationException("Signatures error; Unknown Verification Method: " + uri);
+     }
+ 
++    HttpsURLConnection.setDefaultHostnameVerifier(
++            WhitelistHostnameVerifier.INSTANCE); // ignore SSL certs for localhost
++
+     DIDDocument diDoc = readDIDfromURI(uri);
+     log.debug("getVerifiedVerifier; methods: {}", diDoc.getVerificationMethods());
+     List<Map<String, Object>> available_jwks = (List<Map<String, Object>>) diDoc.toMap().get("verificationMethod");
+@@ -618,14 +625,11 @@ public class VerificationServiceImpl implements VerificationService {
      String[] uri_parts = uri.getSchemeSpecificPart().split(":");
      String did_json;
      if (uri_parts[0].equals("web")) {
@@ -22,7 +43,7 @@ index 6daa65be..14e85af0 100644
        InputStream stream = url.openStream();
        did_json = IOUtils.toString(stream, StandardCharsets.UTF_8);
      } else {
-@@ -636,6 +633,26 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -636,6 +640,26 @@ public class VerificationServiceImpl implements VerificationService {
      return result;
    }
  
@@ -49,7 +70,7 @@ index 6daa65be..14e85af0 100644
    private Map<String, Object> extractRelevantVerificationMethod(List<Map<String, Object>> methods, URI verificationMethodURI) {
      //TODO wait for answer https://gitlab.com/gaia-x/lab/compliance/gx-compliance/-/issues/22
      log.debug("extractRelevantVerificationMethod; methods: {}, uri: {}", methods, verificationMethodURI);
-@@ -695,10 +712,6 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -695,10 +719,6 @@ public class VerificationServiceImpl implements VerificationService {
      //Second, extract required information
      Instant exp = relevant.getNotAfter().toInstant();
  
@@ -60,3 +81,31 @@ index 6daa65be..14e85af0 100644
      log.debug("hasPEMTrustAnchorAndIsNotDeprecated.exit; returning: {}", exp);
      return exp;
    }
+@@ -971,3 +991,27 @@ public class VerificationServiceImpl implements VerificationService {
+   }
+ 
+ }
++
++enum WhitelistHostnameVerifier implements HostnameVerifier {
++  // these hosts get whitelisted
++  INSTANCE("localhost");
++
++  private Set whitelist = new HashSet<>();
++  private HostnameVerifier defaultHostnameVerifier =
++          HttpsURLConnection.getDefaultHostnameVerifier();
++
++  WhitelistHostnameVerifier(String... hostnames) {
++    for (String hostname : hostnames) {
++      whitelist.add(hostname);
++    }
++  }
++
++  @Override
++  public boolean verify(String host, SSLSession session) {
++    if (whitelist.contains(host)) {
++      return true;
++    }
++    // important: use default verifier for all other hosts
++    return defaultHostnameVerifier.verify(host, session);
++  }
++}
