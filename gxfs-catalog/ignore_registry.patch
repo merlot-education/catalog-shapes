@@ -1,5 +1,5 @@
 diff --git a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
-index 6daa65be..9945eae5 100644
+index 6daa65be..9775217d 100644
 --- a/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/gaiax/difs/fc/core/service/verification/impl/VerificationServiceImpl.java
 @@ -70,6 +70,10 @@ import org.apache.jena.riot.system.stream.StreamManager;
@@ -13,17 +13,26 @@ index 6daa65be..9945eae5 100644
  import static org.apache.jena.rdf.model.ResourceFactory.*;
  
  
-@@ -583,6 +587,9 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -95,6 +99,9 @@ public class VerificationServiceImpl implements VerificationService {
+   @Value("${federated-catalogue.verification.service-offering.type}")
+   private String serviceOfferingType; //"http://w3id.org/gaia-x/service#ServiceOffering";
+ 
++  @Autowired
++  private WhitelistHostnameVerifier whitelistHostnameVerifier;
++
+   @Autowired
+   private SchemaStore schemaStore;
+ 
+@@ -583,6 +590,8 @@ public class VerificationServiceImpl implements VerificationService {
        throw new VerificationException("Signatures error; Unknown Verification Method: " + uri);
      }
  
-+    HttpsURLConnection.setDefaultHostnameVerifier(
-+            WhitelistHostnameVerifier.INSTANCE); // ignore SSL certs for localhost
++    HttpsURLConnection.setDefaultHostnameVerifier(whitelistHostnameVerifier); // ignore SSL certs for localhost
 +
      DIDDocument diDoc = readDIDfromURI(uri);
      log.debug("getVerifiedVerifier; methods: {}", diDoc.getVerificationMethods());
      List<Map<String, Object>> available_jwks = (List<Map<String, Object>>) diDoc.toMap().get("verificationMethod");
-@@ -618,14 +625,11 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -618,14 +627,11 @@ public class VerificationServiceImpl implements VerificationService {
      String[] uri_parts = uri.getSchemeSpecificPart().split(":");
      String did_json;
      if (uri_parts[0].equals("web")) {
@@ -43,7 +52,7 @@ index 6daa65be..9945eae5 100644
        InputStream stream = url.openStream();
        did_json = IOUtils.toString(stream, StandardCharsets.UTF_8);
      } else {
-@@ -636,6 +640,26 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -636,6 +642,26 @@ public class VerificationServiceImpl implements VerificationService {
      return result;
    }
  
@@ -70,7 +79,7 @@ index 6daa65be..9945eae5 100644
    private Map<String, Object> extractRelevantVerificationMethod(List<Map<String, Object>> methods, URI verificationMethodURI) {
      //TODO wait for answer https://gitlab.com/gaia-x/lab/compliance/gx-compliance/-/issues/22
      log.debug("extractRelevantVerificationMethod; methods: {}, uri: {}", methods, verificationMethodURI);
-@@ -695,10 +719,6 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -695,10 +721,6 @@ public class VerificationServiceImpl implements VerificationService {
      //Second, extract required information
      Instant exp = relevant.getNotAfter().toInstant();
  
@@ -81,24 +90,17 @@ index 6daa65be..9945eae5 100644
      log.debug("hasPEMTrustAnchorAndIsNotDeprecated.exit; returning: {}", exp);
      return exp;
    }
-@@ -971,3 +991,27 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -971,3 +993,20 @@ public class VerificationServiceImpl implements VerificationService {
    }
  
  }
 +
-+enum WhitelistHostnameVerifier implements HostnameVerifier {
++@Component
++class WhitelistHostnameVerifier implements HostnameVerifier {
 +  // these hosts get whitelisted
-+  INSTANCE("localhost");
-+
-+  private Set whitelist = new HashSet<>();
++  private Set whitelist = Set.of("localhost:8443");
 +  private HostnameVerifier defaultHostnameVerifier =
 +          HttpsURLConnection.getDefaultHostnameVerifier();
-+
-+  WhitelistHostnameVerifier(String... hostnames) {
-+    for (String hostname : hostnames) {
-+      whitelist.add(hostname);
-+    }
-+  }
 +
 +  @Override
 +  public boolean verify(String host, SSLSession session) {
