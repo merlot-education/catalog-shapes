@@ -1,0 +1,22 @@
+diff --git a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
+index 766d17f4..dec4a685 100644
+--- a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
++++ b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
+@@ -727,11 +727,13 @@ public class VerificationServiceImpl implements VerificationService {
+       throw new VerificationException("Signatures error; PEM file does not contain public key");
+     }
+ 
+-    //if (!checkTrustAnchor(uri)) {
+-    ResponseEntity<Map> resp = rest.postForEntity(trustAnchorAddr, Map.of("uri", uri), Map.class);
+-	if (!resp.getStatusCode().is2xxSuccessful()) {
+-      throw new VerificationException("Signatures error; Trust anchor is not set in the registry. URI: " + uri);
++    if (trustAnchorAddr != null && !trustAnchorAddr.isBlank()) {
++      ResponseEntity<Map> resp = rest.postForEntity(trustAnchorAddr, Map.of("uri", uri), Map.class);
++      if (!resp.getStatusCode().is2xxSuccessful()) {
++        throw new VerificationException("Signatures error; Trust anchor is not set in the registry. URI: " + uri);
++      }
+     }
++
+     Instant exp = relevant.getNotAfter().toInstant();
+     log.debug("hasPEMTrustAnchorAndIsNotExpired.exit; returning: {}", exp);
+     return exp;
