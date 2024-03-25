@@ -1,8 +1,37 @@
 diff --git a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
-index 766d17f4..dec4a685 100644
+index 766d17f4..64cf0a1c 100644
 --- a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
-@@ -727,11 +727,13 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -9,6 +9,8 @@ import java.net.URI;
+ import java.net.URL;
+ import java.nio.charset.StandardCharsets;
+ import java.security.GeneralSecurityException;
++import java.security.KeyManagementException;
++import java.security.NoSuchAlgorithmException;
+ import java.security.Security;
+ import java.security.cert.CertificateException;
+ import java.security.cert.CertificateFactory;
+@@ -34,6 +36,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.beans.factory.annotation.Value;
++import org.springframework.context.annotation.Configuration;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+ import org.springframework.stereotype.Component;
+@@ -74,6 +77,11 @@ import info.weboftrust.ldsignatures.verifier.LdVerifier;
+ import jakarta.annotation.PostConstruct;
+ import lombok.extern.slf4j.Slf4j;
+ 
++import javax.net.ssl.HttpsURLConnection;
++import javax.net.ssl.SSLContext;
++import javax.net.ssl.TrustManager;
++import javax.net.ssl.X509TrustManager;
++
+ 
+ /**
+  * Implementation of the {@link VerificationService} interface.
+@@ -727,11 +735,13 @@ public class VerificationServiceImpl implements VerificationService {
        throw new VerificationException("Signatures error; PEM file does not contain public key");
      }
  
@@ -20,3 +49,56 @@ index 766d17f4..dec4a685 100644
      Instant exp = relevant.getNotAfter().toInstant();
      log.debug("hasPEMTrustAnchorAndIsNotExpired.exit; returning: {}", exp);
      return exp;
+@@ -892,3 +902,51 @@ public class VerificationServiceImpl implements VerificationService {
+   }
+ 
+ }
++
++
++@Configuration
++@Slf4j
++class SSLConfig {
++  /**
++   * Disables the SSL certificate checking for new instances of {@link HttpsURLConnection} This has been created to
++   * aid testing on a local box, not for use on production.
++   */
++
++  public SSLConfig(@Value("${federated-catalogue.ignore-ssl:false}") boolean ignoreSsl) {
++    if (ignoreSsl) {
++      disableSSLCertificateChecking();
++      log.info("Disabling SSL verification for web requests.");
++    }
++  }
++
++  private static void disableSSLCertificateChecking() {
++    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
++      public X509Certificate[] getAcceptedIssuers() {
++        return null;
++      }
++
++      @Override
++      public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
++        // Not implemented
++      }
++
++      @Override
++      public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
++        // Not implemented
++      }
++    }};
++
++    try {
++      SSLContext sc = SSLContext.getInstance("TLS");
++
++      sc.init(null, trustAllCerts, new java.security.SecureRandom());
++
++      HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
++      HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> true);
++    } catch (KeyManagementException e) {
++      e.printStackTrace();
++    } catch (NoSuchAlgorithmException e) {
++      e.printStackTrace();
++    }
++  }
++}
+\ No newline at end of file
