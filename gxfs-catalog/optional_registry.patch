@@ -1,17 +1,30 @@
 diff --git a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
-index 766d17f4..64cf0a1c 100644
+index 766d17f4..01e1043f 100644
 --- a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
-@@ -9,6 +9,8 @@ import java.net.URI;
+@@ -8,8 +8,7 @@ import java.io.InputStream;
+ import java.net.URI;
  import java.net.URL;
  import java.nio.charset.StandardCharsets;
- import java.security.GeneralSecurityException;
-+import java.security.KeyManagementException;
-+import java.security.NoSuchAlgorithmException;
- import java.security.Security;
+-import java.security.GeneralSecurityException;
+-import java.security.Security;
++import java.security.*;
  import java.security.cert.CertificateException;
  import java.security.cert.CertificateFactory;
-@@ -34,6 +36,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
+ import java.security.cert.X509Certificate;
+@@ -29,11 +28,19 @@ import java.util.stream.Collectors;
+ import com.fasterxml.jackson.databind.ObjectMapper;
+ import org.apache.commons.io.IOUtils;
+ import org.apache.commons.lang3.tuple.Pair;
++import org.apache.hc.client5.http.classic.HttpClient;
++import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
++import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
++import org.apache.http.conn.HttpClientConnectionManager;
++import org.apache.http.conn.ssl.TrustAllStrategy;
++import org.apache.http.impl.client.HttpClients;
++import org.apache.http.ssl.SSLContexts;
+ import org.apache.jena.riot.system.stream.StreamManager;
+ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Qualifier;
  import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +32,7 @@ index 766d17f4..64cf0a1c 100644
  import org.springframework.http.ResponseEntity;
  import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
  import org.springframework.stereotype.Component;
-@@ -74,6 +77,11 @@ import info.weboftrust.ldsignatures.verifier.LdVerifier;
+@@ -74,6 +81,11 @@ import info.weboftrust.ldsignatures.verifier.LdVerifier;
  import jakarta.annotation.PostConstruct;
  import lombok.extern.slf4j.Slf4j;
  
@@ -31,7 +44,38 @@ index 766d17f4..64cf0a1c 100644
  
  /**
   * Implementation of the {@link VerificationService} interface.
-@@ -727,11 +735,13 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -131,15 +143,28 @@ public class VerificationServiceImpl implements VerificationService {
+   //@Autowired
+   private RestTemplate rest;
+ 
+-  public VerificationServiceImpl() {
++  public VerificationServiceImpl() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+     Security.addProvider(new BouncyCastleProvider());
+     rest = restTemplate();
+   }
+ 
+-  private RestTemplate restTemplate() {
++  private RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+     HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+     factory.setConnectTimeout(HTTP_TIMEOUT);
+     factory.setConnectionRequestTimeout(HTTP_TIMEOUT);
++    factory.setHttpClient((HttpClient) HttpClients.custom()
++            .setConnectionManager(
++                    (HttpClientConnectionManager) PoolingHttpClientConnectionManagerBuilder.create()
++                            .setSSLSocketFactory(
++                                    SSLConnectionSocketFactoryBuilder.create()
++                                            .setSslContext(
++                                                    SSLContexts.custom()
++                                                            .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
++                                                            .build())
++                                            .setHostnameVerifier((s, sslSession) -> true)
++                                            .build())
++                            .build())
++            .build());
+     return new RestTemplate(factory); 
+   }
+   
+@@ -727,11 +752,13 @@ public class VerificationServiceImpl implements VerificationService {
        throw new VerificationException("Signatures error; PEM file does not contain public key");
      }
  
@@ -49,7 +93,7 @@ index 766d17f4..64cf0a1c 100644
      Instant exp = relevant.getNotAfter().toInstant();
      log.debug("hasPEMTrustAnchorAndIsNotExpired.exit; returning: {}", exp);
      return exp;
-@@ -892,3 +902,51 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -892,3 +919,51 @@ public class VerificationServiceImpl implements VerificationService {
    }
  
  }
