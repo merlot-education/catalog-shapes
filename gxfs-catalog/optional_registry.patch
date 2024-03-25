@@ -1,5 +1,5 @@
 diff --git a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
-index d28cceb3..3030f759 100644
+index d28cceb3..4cfd1e69 100644
 --- a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
 @@ -7,6 +7,9 @@ import java.io.IOException;
@@ -68,7 +68,22 @@ index d28cceb3..3030f759 100644
    
    @PostConstruct
    private void initializeTrustFrameworkBaseClasses() {
-@@ -832,3 +843,66 @@ public class VerificationServiceImpl implements VerificationService {
+@@ -648,9 +659,11 @@ public class VerificationServiceImpl implements VerificationService {
+     }
+ 
+     try {
+-      ResponseEntity<Map> resp = rest.postForEntity(trustAnchorAddr, Map.of("uri", uri), Map.class);
+-      if (!resp.getStatusCode().is2xxSuccessful()) {
+-        log.info("hasPEMTrustAnchorAndIsNotExpired; Trust anchor is not set in the registry. URI: {}", uri);
++      if (trustAnchorAddr != null && !trustAnchorAddr.isBlank()) {
++        ResponseEntity<Map> resp = rest.postForEntity(trustAnchorAddr, Map.of("uri", uri), Map.class);
++        if (!resp.getStatusCode().is2xxSuccessful()) {
++          log.info("hasPEMTrustAnchorAndIsNotExpired; Trust anchor is not set in the registry. URI: {}", uri);
++        }
+       }
+     } catch (Exception ex) {
+       log.warn("hasPEMTrustAnchorAndIsNotExpired; trust anchor error: {}", ex.getMessage());
+@@ -832,3 +845,66 @@ public class VerificationServiceImpl implements VerificationService {
    }
  
  }
