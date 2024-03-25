@@ -1,22 +1,21 @@
 diff --git a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
-index 766d17f4..7392efec 100644
+index d28cceb3..3030f759 100644
 --- a/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
 +++ b/fc-service-core/src/main/java/eu/xfsc/fc/core/service/verification/VerificationServiceImpl.java
-@@ -8,8 +8,7 @@ import java.io.InputStream;
+@@ -7,6 +7,9 @@ import java.io.IOException;
+ import java.io.InputStream;
  import java.net.URI;
- import java.net.URL;
  import java.nio.charset.StandardCharsets;
--import java.security.GeneralSecurityException;
--import java.security.Security;
-+import java.security.*;
++import java.security.KeyManagementException;
++import java.security.KeyStoreException;
++import java.security.NoSuchAlgorithmException;
  import java.security.cert.CertificateException;
  import java.security.cert.CertificateFactory;
  import java.security.cert.X509Certificate;
-@@ -29,11 +28,21 @@ import java.util.stream.Collectors;
- import com.fasterxml.jackson.databind.ObjectMapper;
- import org.apache.commons.io.IOUtils;
- import org.apache.commons.lang3.tuple.Pair;
-+import org.apache.hc.client5.http.classic.HttpClient;
+@@ -24,10 +27,19 @@ import java.util.List;
+ import java.util.Map;
+ import java.util.Set;
+ 
 +import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 +import org.apache.hc.client5.http.impl.classic.HttpClients;
 +import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
@@ -25,7 +24,6 @@ index 766d17f4..7392efec 100644
 +import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 +import org.apache.hc.core5.ssl.SSLContextBuilder;
  import org.apache.jena.riot.system.stream.StreamManager;
- import org.bouncycastle.jce.provider.BouncyCastleProvider;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.beans.factory.annotation.Qualifier;
  import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +32,7 @@ index 766d17f4..7392efec 100644
  import org.springframework.http.ResponseEntity;
  import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
  import org.springframework.stereotype.Component;
-@@ -74,6 +83,11 @@ import info.weboftrust.ldsignatures.verifier.LdVerifier;
+@@ -66,6 +78,11 @@ import info.weboftrust.ldsignatures.LdProof;
  import jakarta.annotation.PostConstruct;
  import lombok.extern.slf4j.Slf4j;
  
@@ -46,51 +44,34 @@ index 766d17f4..7392efec 100644
  
  /**
   * Implementation of the {@link VerificationService} interface.
-@@ -129,18 +143,11 @@ public class VerificationServiceImpl implements VerificationService {
-   private boolean loadersInitialised;
-   private StreamManager streamManager;
-   //@Autowired
+@@ -121,20 +138,14 @@ public class VerificationServiceImpl implements VerificationService {
+ 
+   private static final int HTTP_TIMEOUT = 5*1000; 
+ 
 -  private RestTemplate rest;
 +  private final RestTemplate rest;
+   private boolean loadersInitialised;
+   private StreamManager streamManager;
  
 -  public VerificationServiceImpl() {
-+  public VerificationServiceImpl(@Autowired @Qualifier("customRestTemplate") RestTemplate rest) {
-     Security.addProvider(new BouncyCastleProvider());
 -    rest = restTemplate();
--  }
--
++  public VerificationServiceImpl(@Autowired @Qualifier("customRestTemplate") RestTemplate rest) {
++    this.rest = rest;
+   }
+ 
 -  private RestTemplate restTemplate() {
 -    HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 -    factory.setConnectTimeout(HTTP_TIMEOUT);
 -    factory.setConnectionRequestTimeout(HTTP_TIMEOUT);
 -    return new RestTemplate(factory); 
-+    this.rest = rest;
-   }
+-  }
    
    @PostConstruct
-@@ -727,11 +734,13 @@ public class VerificationServiceImpl implements VerificationService {
-       throw new VerificationException("Signatures error; PEM file does not contain public key");
-     }
- 
--    //if (!checkTrustAnchor(uri)) {
--    ResponseEntity<Map> resp = rest.postForEntity(trustAnchorAddr, Map.of("uri", uri), Map.class);
--	if (!resp.getStatusCode().is2xxSuccessful()) {
--      throw new VerificationException("Signatures error; Trust anchor is not set in the registry. URI: " + uri);
-+    if (trustAnchorAddr != null && !trustAnchorAddr.isBlank()) {
-+      ResponseEntity<Map> resp = rest.postForEntity(trustAnchorAddr, Map.of("uri", uri), Map.class);
-+      if (!resp.getStatusCode().is2xxSuccessful()) {
-+        throw new VerificationException("Signatures error; Trust anchor is not set in the registry. URI: " + uri);
-+      }
-     }
-+
-     Instant exp = relevant.getNotAfter().toInstant();
-     log.debug("hasPEMTrustAnchorAndIsNotExpired.exit; returning: {}", exp);
-     return exp;
-@@ -892,3 +901,76 @@ public class VerificationServiceImpl implements VerificationService {
+   private void initializeTrustFrameworkBaseClasses() {
+@@ -832,3 +843,66 @@ public class VerificationServiceImpl implements VerificationService {
    }
  
  }
-+
 +
 +@Configuration
 +@Slf4j
@@ -99,10 +80,8 @@ index 766d17f4..7392efec 100644
 +   * Disables the SSL certificate checking for new instances of {@link HttpsURLConnection} This has been created to
 +   * aid testing on a local box, not for use on production.
 +   */
-+
 +  private final boolean ignoreSsl;
 +  private static final int HTTP_TIMEOUT = 5*1000; //5sec
-+
 +  public SSLConfig(@Value("${federated-catalogue.ignore-ssl:false}") boolean ignoreSsl) {
 +    this.ignoreSsl = ignoreSsl;
 +    if (ignoreSsl) {
@@ -110,7 +89,6 @@ index 766d17f4..7392efec 100644
 +      log.info("Disabling SSL verification for web requests.");
 +    }
 +  }
-+
 +  @Bean("customRestTemplate")
 +  public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 +    HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -131,29 +109,23 @@ index 766d17f4..7392efec 100644
 +    }
 +    return new RestTemplate(factory);
 +  }
-+
 +  private static void disableSSLCertificateChecking() {
 +    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
 +      public X509Certificate[] getAcceptedIssuers() {
 +        return null;
 +      }
-+
 +      @Override
 +      public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
 +        // Not implemented
 +      }
-+
 +      @Override
 +      public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
 +        // Not implemented
 +      }
 +    }};
-+
 +    try {
 +      SSLContext sc = SSLContext.getInstance("TLS");
-+
 +      sc.init(null, trustAllCerts, new java.security.SecureRandom());
-+
 +      HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 +      HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> true);
 +    } catch (KeyManagementException e) {
